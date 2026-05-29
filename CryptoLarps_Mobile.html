@@ -9,11 +9,11 @@
 
 :root{
   --bg:#121212;
-  --bg2:#1e1e1e;
-  --bg3:#2a2a2a;
-  --bg4:#323131;
-  --border:rgba(255,255,255,0.08);
-  --border2:rgba(255,255,255,0.14);
+  --bg2:#181717;
+  --bg3:#222121;
+  --bg4:#1a1a1a;
+  --border:rgba(255,255,255,0.04);
+  --border2:rgba(255,255,255,0.07);
   --text:#e0e0e0;
   --muted:#6a6a6a;
   --muted2:#afaeae;
@@ -797,7 +797,7 @@ function renderDonut(total){
 
   const bg=document.createElementNS('http://www.w3.org/2000/svg','circle');
   bg.setAttribute('cx',cx);bg.setAttribute('cy',cy);bg.setAttribute('r',r);
-  bg.setAttribute('fill','none');bg.setAttribute('stroke','#323131');bg.setAttribute('stroke-width',thick);
+  bg.setAttribute('fill','none');bg.setAttribute('stroke','#1a1a1a');bg.setAttribute('stroke-width',thick);
   svg.appendChild(bg);
 
   const segments=[];
