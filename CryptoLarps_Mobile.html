@@ -754,6 +754,16 @@ const COINS=[
 let holdings={BTC:0.42,ETH:2.8,SOL:45,BNB:3.1,XRP:12000,ADA:8500,DOGE:95000,DOT:210,AVAX:88,LINK:320,LTC:12,USDT:500};
 let trades=[];
 
+function saveHoldings(){
+  try{localStorage.setItem('nexus_holdings',JSON.stringify(holdings));}catch(e){}
+}
+function loadHoldings(){
+  try{
+    const saved=localStorage.getItem('nexus_holdings');
+    if(saved){const parsed=JSON.parse(saved);Object.keys(parsed).forEach(k=>{holdings[k]=parsed[k];});}
+  }catch(e){}
+}
+
 const fmt=(n,d=2)=>'$'+n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
 const fmtCoin=(n)=>n.toLocaleString('en-US',{maximumSignificantDigits:5});
 const getTotal=()=>COINS.reduce((s,c)=>s+c.price*(holdings[c.sym]||0),0);
@@ -941,7 +951,7 @@ function executeBuy(){
   const amt=parseFloat(document.getElementById('buyAmount').value)||0;
   const coin=COINS.find(c=>c.sym===sym);
   holdings[sym]=(holdings[sym]||0)+amt/coin.price;
-  closeBuy();renderAll();showToast('✓ Bought '+fmt(amt)+' of '+sym);
+  closeBuy();saveHoldings();renderAll();showToast('✓ Bought '+fmt(amt)+' of '+sym);
 }
 
 // ── RECEIVE SHEET ──
@@ -969,7 +979,7 @@ function openModal(){
 function closeModal(){document.getElementById('modalOverlay').classList.remove('open')}
 function saveModal(){
   COINS.forEach(c=>{const v=parseFloat(document.getElementById('m_'+c.sym).value)||0;holdings[c.sym]=v;});
-  closeModal();renderAll();showToast('✓ Holdings updated');
+  closeModal();saveHoldings();renderAll();showToast('✓ Holdings updated');
 }
 
 // ── TOAST ──
@@ -1025,7 +1035,7 @@ document.getElementById('modalOverlay').addEventListener('click',function(e){if(
 // toggles in settings
 document.querySelectorAll('.toggle:not(#livePriceToggle)').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('off')));
 
-renderAll();
+loadHoldings();renderAll();
 </script>
 </body>
 </html>
