@@ -1336,60 +1336,39 @@ function showToast(msg){
 }
 
 // ── LIVE PRICES ──
+// LIVE PRICES
 let liveEnabled=false,liveInterval=null;
-const BINANCE_PAIRS={BTC:'BTCUSDT',ETH:'ETHUSDT',SOL:'SOLUSDT',BNB:'BNBUSDT',XRP:'XRPUSDT',ADA:'ADAUSDT',DOGE:'DOGEUSDT',DOT:'DOTUSDT',AVAX:'AVAXUSDT',LINK:'LINKUSDT',LTC:'LTCUSDT',USDT:null};
+const GECKO_IDS={BTC:'bitcoin',ETH:'ethereum',SOL:'solana',BNB:'binancecoin',XRP:'ripple',ADA:'cardano',DOGE:'dogecoin',DOT:'polkadot',AVAX:'avalanche-2',LINK:'chainlink',LTC:'litecoin',USDT:'tether'};
 async function fetchLivePrices(){
   try{
-    document.getElementById('liveStatus').textContent='Syncing…';
+    document.getElementById('liveStatus').textContent='Fetching…';
     document.getElementById('liveStatus').style.color='var(--yellow)';
-    // Binance public API - no key, no CORS issues
-    const pairs=Object.values(BINANCE_PAIRS).filter(Boolean);
-    const symbol24h=pairs.map(p=>'%22'+p+'%22').join(',');
-    const [tickerRes,changeRes]=await Promise.all([
-      fetch('https://api.binance.com/api/v3/ticker/price?symbols=['+pairs.map(p=>'"'+p+'"').join(',')+']'),
-      fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=['+pairs.map(p=>'"'+p+'"').join(',')+']&type=MINI')
-    ]);
-    if(!tickerRes.ok||!changeRes.ok) throw new Error('HTTP error');
-    const prices=await tickerRes.json();
-    const changes=await changeRes.json();
-    const priceMap={},changeMap={};
-    prices.forEach(p=>{priceMap[p.symbol]=parseFloat(p.price);});
-    changes.forEach(c=>{changeMap[c.symbol]=parseFloat(((c.lastPrice-c.openPrice)/c.openPrice*100).toFixed(2));});
-    COINS.forEach(c=>{
-      const pair=BINANCE_PAIRS[c.sym];
-      if(pair&&priceMap[pair]!==undefined){
-        c.price=priceMap[pair];
-        c.change=changeMap[pair]||c.change;
-      }
-    });
+    const ids=Object.values(GECKO_IDS).join(',');
+    const res=await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+ids+'&vs_currencies=usd&include_24hr_change=true');
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    COINS.forEach(c=>{const id=GECKO_IDS[c.sym];if(data[id]){c.price=data[id].usd;c.change=parseFloat((data[id].usd_24h_change||0).toFixed(2));}});
     document.getElementById('lastUpdated').textContent=new Date().toLocaleTimeString();
     document.getElementById('liveStatus').textContent='Live ●';
     document.getElementById('liveStatus').style.color='var(--green)';
     renderAll();
+    if(document.getElementById('page-portfolio').classList.contains('active'))renderPortfolio();
   }catch(e){
-    document.getElementById('liveStatus').textContent='Error';
+    document.getElementById('liveStatus').textContent='Error — retrying';
     document.getElementById('liveStatus').style.color='var(--red)';
-    showToast('⚠ Price update failed');
-    console.error(e);
+    showToast('⚠ Fetch failed: '+e.message);
   }
 }
 function toggleLivePrices(){
   liveEnabled=!liveEnabled;
   const tog=document.getElementById('livePriceToggle');
-  if(liveEnabled){
-    tog.classList.remove('off');
-    fetchLivePrices();
-    liveInterval=setInterval(fetchLivePrices,30000);
-    showToast('✓ Live prices ON');
-  } else {
-    tog.classList.add('off');
-    clearInterval(liveInterval);liveInterval=null;
-    document.getElementById('liveStatus').textContent='Offline';
-    document.getElementById('liveStatus').style.color='var(--muted2)';
-    document.getElementById('lastUpdated').textContent='—';
-    showToast('Live prices OFF');
-  }
+  if(liveEnabled){tog.classList.remove('off');fetchLivePrices();liveInterval=setInterval(fetchLivePrices,30000);showToast('✓ Live prices ON');}
+  else{tog.classList.add('off');clearInterval(liveInterval);liveInterval=null;document.getElementById('liveStatus').textContent='Offline';document.getElementById('liveStatus').style.color='var(--muted2)';document.getElementById('lastUpdated').textContent='—';showToast('Live prices OFF');}
 }
+
+document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.querySelectorAll('.toggle:not(#livePriceToggle)').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('off')));
+loadHoldings();renderAll();renderTrade();
 
 
 
@@ -1680,42 +1659,6 @@ setTimeout(()=>animateNavPill('home'), 50);
     const fadeStart = 40, fadeEnd = 260;
     const ga = Math.max(0, 1 - Math.max(0, scrollY - fadeStart) / (fadeEnd - fadeStart));
     if(ga <= 0){ raf = requestAnimationFrame(draw); return; }
-
-    // ── Donut shimmer ──
-    // Measure the donut element directly so the shimmer is always centred on it
-    const donutEl   = document.getElementById('donutSvg');
-    const canvasRect = canvas.getBoundingClientRect();
-    let shimmerX = W * 0.5, shimmerY = H * 0.42, baseR = Math.min(W, H) * 0.36;
-    if(donutEl){
-      const dr = donutEl.getBoundingClientRect();
-      shimmerX = dr.left + dr.width  * 0.5 - canvasRect.left;
-      shimmerY = dr.top  + dr.height * 0.5 - canvasRect.top;
-      baseR    = dr.width * 0.48;
-    }
-
-    // Three concentric pulses with staggered phases so they ripple outward
-    const pulses = [
-      { phase: 0.0,  speed: 0.00060, rMult: 1.15, aMult: 1.0  },
-      { phase: 2.1,  speed: 0.00050, rMult: 1.55, aMult: 0.60 },
-      { phase: 4.2,  speed: 0.00040, rMult: 2.00, aMult: 0.30 },
-    ];
-
-    pulses.forEach(p => {
-      const breath  = 0.5 + 0.5 * Math.sin(t * p.speed + p.phase);
-      const r       = baseR * p.rMult * (0.94 + 0.06 * breath);
-      const peakA   = 0.065 * p.aMult * breath * ga;
-      if(peakA < 0.002) return;
-
-      const grad = ctx.createRadialGradient(shimmerX, shimmerY, r * 0.4, shimmerX, shimmerY, r);
-      grad.addColorStop(0,   `rgba(106,90,205, ${(peakA * 0.8).toFixed(4)})`);
-      grad.addColorStop(0.5, `rgba(106,90,205, ${(peakA * 0.35).toFixed(4)})`);
-      grad.addColorStop(1,   `rgba(106,90,205, 0)`);
-
-      ctx.beginPath();
-      ctx.arc(shimmerX, shimmerY, r, 0, Math.PI * 2);
-      ctx.fillStyle = grad;
-      ctx.fill();
-    });
 
     // ── Particles ──
     ctx.globalAlpha = ga;
