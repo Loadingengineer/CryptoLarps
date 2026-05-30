@@ -1338,7 +1338,7 @@ function coinImg(sym, size, color, fallbackIcon) {
   }
   return '<img src="' + src + '"'
     + ' width="' + size + '" height="' + size + '"'
-    + ' style="display:block;border-radius:' + br + ';flex-shrink:0;width:' + size + 'px;height:' + size + 'px;filter:grayscale(100%) brightness(1.4)"'
+    + ' style="display:block;border-radius:' + br + ';flex-shrink:0;width:' + size + 'px;height:' + size
     + ' onerror="coinImgFallback(this,\'' + sym + '\')"'
     + ' alt="' + sym + '">';
 }
