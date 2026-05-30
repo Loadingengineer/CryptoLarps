@@ -4,12 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>NEXUS · Wallet</title>
-<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
-<link rel="icon" type="image/png" href="icon.png">
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="NEXUS">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap');
 
@@ -44,8 +38,8 @@ body{
   max-width:430px;
   margin:0 auto;
   position:relative;
-  overflow:hidden;
 }
+
 
 /* ── TOP BAR ── */
 .topbar{
@@ -58,6 +52,7 @@ body{
   flex-shrink:0;
   position:relative;
   z-index:10;
+  
 }
 .logo{
   display:flex;
@@ -524,6 +519,201 @@ body{
   text-align:center;padding:40px 20px;
   font-size:13px;color:var(--muted2);
 }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  width:auto;
+  background:var(--bg2);
+  border:1px solid var(--border2);
+  border-radius:40px;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding:6px;
+  z-index:40;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+  backdrop-filter:blur(12px);
+  position:fixed;
+}
+.nav-item{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  cursor:pointer;padding:8px 28px;border-radius:32px;
+  transition:color .25s ease;color:var(--muted2);
+  font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  user-select:none;position:relative;z-index:1;
+}
+.nav-item:active{opacity:.7}
+.nav-item.active{color:var(--accent);}
+.nav-icon{font-size:16px;line-height:1;transition:transform .25s cubic-bezier(.4,0,.2,1)}
+.nav-item.active .nav-icon{transform:scale(1.15)}
+.nav-pill{
+  position:absolute;
+  top:6px;bottom:6px;
+  left:6px;
+  width:0;
+  border-radius:28px;
+  background:var(--bg3);
+  transition:transform .3s cubic-bezier(.4,0,.2,1), width .3s cubic-bezier(.4,0,.2,1);
+  z-index:0;
+  pointer-events:none;
+}
+
+/* ── PAGES ── */
+.page{display:none;flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+.page::-webkit-scrollbar{display:none}
+/* page.active handled by pg-visible */
+#page-home{padding-bottom:100px}
+
+/* ── TRADE PAGE ── */
+.trade-page{padding:16px 14px 100px;}
+.trade-toggle{
+  display:grid;grid-template-columns:1fr 1fr;
+  background:var(--bg3);border-radius:12px;padding:3px;
+  margin-bottom:18px;
+}
+.trade-tab{
+  padding:9px 0;text-align:center;
+  border-radius:10px;cursor:pointer;
+  font-size:13px;font-weight:700;
+  color:var(--muted2);transition:all .2s;
+  letter-spacing:.02em;
+}
+.trade-tab.active-buy{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;}
+.trade-tab.active-sell{background:linear-gradient(135deg,#cc5050,#a03030);color:#fff;}
+.coin-picker-label{
+  font-size:10px;font-weight:700;color:var(--muted2);
+  letter-spacing:.08em;text-transform:uppercase;
+  margin-bottom:8px;display:block;
+}
+.coin-picker{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.coin-pick-item{
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:10px 12px;cursor:pointer;
+  transition:all .15s;
+}
+.coin-pick-item:active{background:var(--bg3)}
+.coin-pick-item.selected{border-color:var(--accent);background:rgba(106,90,205,0.08);}
+.cp-icon{
+  width:34px;height:34px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;flex-shrink:0;
+}
+.cp-info{flex:1;min-width:0;}
+.cp-name{font-size:12px;font-weight:600;line-height:1.2}
+.cp-sub{font-size:10px;color:var(--muted2);font-family:'Roboto',monospace;margin-top:1px}
+.cp-right{text-align:right;flex-shrink:0}
+.cp-price{font-size:12px;font-family:'Roboto',monospace;font-weight:500;}
+.cp-held{font-size:10px;color:var(--muted2);font-family:'Roboto',monospace;margin-top:1px}
+.amount-section{margin-bottom:14px;}
+.amount-input-wrap{
+  display:flex;align-items:center;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;
+}
+.amount-input-wrap:focus-within{border-color:var(--accent)}
+.amount-currency{padding:0 12px;font-size:13px;font-weight:600;color:var(--muted2);flex-shrink:0;}
+.amount-field{
+  flex:1;background:none;border:none;outline:none;
+  font-family:'Roboto',monospace;font-size:18px;font-weight:500;
+  color:var(--text);padding:14px 0;min-width:0;
+}
+.amount-max{padding:0 14px;font-size:11px;font-weight:700;color:var(--accent);cursor:pointer;flex-shrink:0;letter-spacing:.03em;}
+.amount-max:active{color:var(--text)}
+.quick-amts{display:flex;gap:6px;margin-top:8px;}
+.quick-amt{
+  flex:1;padding:7px 0;text-align:center;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;font-size:11px;font-weight:600;
+  color:var(--muted2);cursor:pointer;transition:all .15s;
+}
+.quick-amt:active{background:var(--bg4);color:var(--text)}
+.trade-preview{background:var(--bg3);border-radius:12px;padding:13px 14px;margin-bottom:14px;}
+.tp-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:4px 0;}
+.tp-row.total{border-top:1px solid var(--border);margin-top:4px;padding-top:8px;}
+.tp-k{color:var(--muted2)}
+.tp-v{font-family:'Roboto',monospace;font-weight:500}
+.exec-btn{
+  width:100%;padding:15px;border-radius:13px;border:none;
+  font-family:'Inter Tight',sans-serif;font-size:15px;font-weight:700;
+  cursor:pointer;transition:all .15s;letter-spacing:.02em;
+}
+.exec-btn:active{filter:brightness(.9)}
+.exec-buy{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
+/* ── COIN SELECTOR BUTTON ── */
+.coin-selector-btn{
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:14px;padding:12px 14px;cursor:pointer;
+  transition:all .15s;margin-bottom:16px;
+}
+.coin-selector-btn:active{background:var(--bg3)}
+.cs-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.cs-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
+.cs-info{min-width:0}
+.cs-name{font-size:13px;font-weight:600;line-height:1.2}
+.cs-sym{font-size:11px;color:var(--muted2);font-family:'Roboto',monospace;margin-top:1px}
+.cs-right{text-align:right;flex-shrink:0;margin-right:6px}
+.cs-price{font-size:12px;font-family:'Roboto',monospace;font-weight:500}
+.cs-chg{font-size:11px;font-weight:600;margin-top:1px}
+.cs-chevron{color:var(--muted2);flex-shrink:0}
+
+/* coin sheet list items reuse coin-pick-item styles */
+
+.exec-sell{background:linear-gradient(135deg,#cc5050,#a03030);color:#fff}
+
+/* ── PAGE SLIDE ANIMATIONS ── */
+.pages-container{
+  flex:1;
+  position:relative;
+  overflow:hidden;
+}
+.page{
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  transition:transform .32s cubic-bezier(.4,0,.2,1), opacity .28s ease;
+  will-change:transform,opacity;
+  display:block !important;
+}
+.page::-webkit-scrollbar{display:none}
+/* Default states */
+#page-home{transform:translateX(0);opacity:1;pointer-events:all;}
+#page-home.going-left{transform:translateX(-28%);opacity:0;pointer-events:none;}
+#page-trade{transform:translateX(100%);opacity:0;pointer-events:none;}
+#page-trade.coming-in{transform:translateX(0);opacity:1;pointer-events:all;}
+
+/* ── BUY/SELL TOGGLE SLIDE ── */
+.trade-toggle{
+  position:relative;
+}
+.toggle-slider{
+  position:absolute;
+  top:3px;bottom:3px;
+  width:calc(50% - 3px);
+  border-radius:10px;
+  transition:transform .25s cubic-bezier(.4,0,.2,1), background .25s ease;
+  z-index:0;
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+}
+.toggle-slider.sell{
+  transform:translateX(calc(100% + 0px));
+  background:linear-gradient(135deg,#cc5050,#a03030);
+}
+.trade-tab{
+  position:relative;z-index:1;
+  color:var(--muted2);
+  transition:color .2s ease;
+}
+.trade-tab.active-buy,.trade-tab.active-sell{
+  color:#fff;
+  background:none !important;
+}
 </style>
 </head>
 <body>
@@ -535,12 +725,18 @@ body{
   </div>
   <div class="topbar-right">
     <span class="live-dot" id="liveStatus">Offline</span>
-    <div class="gear-btn" onclick="openSettings()" title="Settings">⚙</div>
+    <div class="gear-btn" onclick="openSettings()" title="Settings">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3"/>
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+  </svg>
+</div>
   </div>
 </div>
 
-<!-- SCROLL BODY -->
-<div class="scroll-body">
+<!-- PAGES -->
+<div class="pages-container">
+<div id="page-home" class="page" style="padding-bottom:100px">
 
   <!-- HERO -->
   <div class="hero">
@@ -597,7 +793,103 @@ body{
   </div>
   <div class="holdings-list" id="holdingsList"></div>
 
-</div><!-- /scroll-body -->
+</div><!-- /page-home -->
+
+
+<!-- TRADE PAGE -->
+<div id="page-trade" class="page" style="padding-bottom:100px">
+  <div class="trade-page">
+
+    <!-- Buy / Sell toggle -->
+    <div class="trade-toggle">
+      <div class="toggle-slider" id="toggleSlider"></div>
+      <div class="trade-tab active-buy" id="tabBuy" onclick="setTradeMode('buy')">Buy</div>
+      <div class="trade-tab" id="tabSell" onclick="setTradeMode('sell')">Sell</div>
+    </div>
+
+    <!-- Coin selector button -->
+    <span class="coin-picker-label" id="pickerLabel">Asset</span>
+    <div class="coin-selector-btn" id="coinSelectorBtn" onclick="openCoinSheet()">
+      <div class="cs-left">
+        <div class="cs-icon" id="csIcon"></div>
+        <div class="cs-info">
+          <div class="cs-name" id="csName">Bitcoin</div>
+          <div class="cs-sym" id="csSym">BTC</div>
+        </div>
+      </div>
+      <div class="cs-right">
+        <div class="cs-price" id="csPrice"></div>
+        <div class="cs-chg" id="csChg"></div>
+      </div>
+      <svg class="cs-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+
+    <!-- Amount -->
+    <div class="amount-section">
+      <span class="coin-picker-label" id="amountLabel">Amount (USD)</span>
+      <div class="amount-input-wrap">
+        <span class="amount-currency" id="amountCurrency">$</span>
+        <input class="amount-field" type="number" id="tradeAmount" value="100" oninput="updateTradePreview()">
+        <span class="amount-max" id="maxBtn" onclick="setMax()" style="display:none">MAX</span>
+      </div>
+      <div class="quick-amts" id="quickAmts">
+        <div class="quick-amt" onclick="setQuick(50)">$50</div>
+        <div class="quick-amt" onclick="setQuick(100)">$100</div>
+        <div class="quick-amt" onclick="setQuick(250)">$250</div>
+        <div class="quick-amt" onclick="setQuick(500)">$500</div>
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="trade-preview" id="tradePreview">
+      <div class="tp-row"><span class="tp-k" id="previewLabel1">You pay</span><span class="tp-v" id="previewVal1">—</span></div>
+      <div class="tp-row"><span class="tp-k" id="previewLabel2">You receive</span><span class="tp-v" id="previewVal2">—</span></div>
+      <div class="tp-row"><span class="tp-k">Fee (0.5%)</span><span class="tp-v" id="previewFee">—</span></div>
+      <div class="tp-row total"><span class="tp-k" style="font-weight:600;color:var(--text)" id="previewTotalLabel">Total</span><span class="tp-v" id="previewTotal" style="color:var(--green)">—</span></div>
+    </div>
+
+    <!-- Execute -->
+    <button class="exec-btn exec-buy" id="execBtn" onclick="executeTrade()">Buy Now</button>
+
+  </div>
+</div>
+
+
+<!-- ── COIN SELECT SHEET ── -->
+<div class="sheet-overlay" id="coinSheetOverlay" onclick="closeCoinSheet()"></div>
+<div class="bottom-sheet" id="coinSheet" style="max-height:75vh">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title" id="coinSheetTitle">Select Asset</span>
+    <div class="sheet-close" onclick="closeCoinSheet()">✕</div>
+  </div>
+  <div style="padding:10px 14px 4px">
+    <input id="coinSearch" class="form-input" style="margin-bottom:0" placeholder="Search…" oninput="filterCoins(this.value)">
+  </div>
+  <div id="coinSheetList" style="padding:8px 14px 24px;display:flex;flex-direction:column;gap:6px;overflow-y:auto"></div>
+</div>
+</div><!-- /pages-container -->
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav" id="bottomNav">
+  <div class="nav-pill" id="navPill"></div>
+  <div class="nav-item active" id="nav-home" onclick="switchPage('home')">
+    <span class="nav-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/>
+      </svg>
+    </span>
+    <span>Wallet</span>
+  </div>
+  <div class="nav-item" id="nav-trade" onclick="switchPage('trade')">
+    <span class="nav-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/>
+      </svg>
+    </span>
+    <span>Trade</span>
+  </div>
+</div>
 
 <!-- ── SETTINGS PANEL ── -->
 <div class="overlay" id="settingsOverlay" onclick="closeSettings()"></div>
@@ -998,16 +1290,31 @@ function showToast(msg){
 
 // ── LIVE PRICES ──
 let liveEnabled=false,liveInterval=null;
-const GECKO_IDS={BTC:'bitcoin',ETH:'ethereum',SOL:'solana',BNB:'binancecoin',XRP:'ripple',ADA:'cardano',DOGE:'dogecoin',DOT:'polkadot',AVAX:'avalanche-2',LINK:'chainlink',LTC:'litecoin',USDT:'tether'};
+const BINANCE_PAIRS={BTC:'BTCUSDT',ETH:'ETHUSDT',SOL:'SOLUSDT',BNB:'BNBUSDT',XRP:'XRPUSDT',ADA:'ADAUSDT',DOGE:'DOGEUSDT',DOT:'DOTUSDT',AVAX:'AVAXUSDT',LINK:'LINKUSDT',LTC:'LTCUSDT',USDT:null};
 async function fetchLivePrices(){
   try{
     document.getElementById('liveStatus').textContent='Syncing…';
     document.getElementById('liveStatus').style.color='var(--yellow)';
-    const ids=Object.values(GECKO_IDS).join(',');
-    const res=await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+ids+'&vs_currencies=usd&include_24hr_change=true');
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    const data=await res.json();
-    COINS.forEach(c=>{const id=GECKO_IDS[c.sym];if(data[id]){c.price=data[id].usd;c.change=parseFloat((data[id].usd_24h_change||0).toFixed(2));}});
+    // Binance public API - no key, no CORS issues
+    const pairs=Object.values(BINANCE_PAIRS).filter(Boolean);
+    const symbol24h=pairs.map(p=>'%22'+p+'%22').join(',');
+    const [tickerRes,changeRes]=await Promise.all([
+      fetch('https://api.binance.com/api/v3/ticker/price?symbols=['+pairs.map(p=>'"'+p+'"').join(',')+']'),
+      fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=['+pairs.map(p=>'"'+p+'"').join(',')+']&type=MINI')
+    ]);
+    if(!tickerRes.ok||!changeRes.ok) throw new Error('HTTP error');
+    const prices=await tickerRes.json();
+    const changes=await changeRes.json();
+    const priceMap={},changeMap={};
+    prices.forEach(p=>{priceMap[p.symbol]=parseFloat(p.price);});
+    changes.forEach(c=>{changeMap[c.symbol]=parseFloat(((c.lastPrice-c.openPrice)/c.openPrice*100).toFixed(2));});
+    COINS.forEach(c=>{
+      const pair=BINANCE_PAIRS[c.sym];
+      if(pair&&priceMap[pair]!==undefined){
+        c.price=priceMap[pair];
+        c.change=changeMap[pair]||c.change;
+      }
+    });
     document.getElementById('lastUpdated').textContent=new Date().toLocaleTimeString();
     document.getElementById('liveStatus').textContent='Live ●';
     document.getElementById('liveStatus').style.color='var(--green)';
@@ -1015,7 +1322,8 @@ async function fetchLivePrices(){
   }catch(e){
     document.getElementById('liveStatus').textContent='Error';
     document.getElementById('liveStatus').style.color='var(--red)';
-    showToast('⚠ Fetch failed: '+e.message);
+    showToast('⚠ Price update failed');
+    console.error(e);
   }
 }
 function toggleLivePrices(){
@@ -1036,12 +1344,239 @@ function toggleLivePrices(){
   }
 }
 
+
+
+function animateNavPill(page){
+  const pill = document.getElementById('navPill');
+  const activeItem = document.getElementById('nav-'+page);
+  const nav = document.getElementById('bottomNav');
+  if(!pill||!activeItem||!nav) return;
+  const navRect = nav.getBoundingClientRect();
+  const itemRect = activeItem.getBoundingClientRect();
+  pill.style.width = itemRect.width + 'px';
+  pill.style.transform = 'translateX(' + (itemRect.left - navRect.left - 6) + 'px)';
+}
+// ── PAGE SWITCHING ──
+let currentPage = 'home';
+function switchPage(page){
+  if(page===currentPage) return;
+  const pageHome = document.getElementById('page-home');
+  const pageTrade = document.getElementById('page-trade');
+
+  if(page==='trade'){
+    pageHome.classList.add('going-left');
+    pageTrade.classList.remove('going-right');
+    pageTrade.classList.add('coming-in');
+  } else {
+    pageTrade.classList.remove('coming-in');
+    pageTrade.classList.add('going-right');
+    pageHome.classList.remove('going-left');
+  }
+
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('nav-'+page).classList.add('active');
+  currentPage = page;
+  animateNavPill(page);
+  if(page==='trade') renderTradePage();
+}
+
+// ── TRADE PAGE ──
+let tradeMode = 'buy';  // 'buy' | 'sell'
+let selectedSym = 'BTC';
+
+function setTradeMode(mode){
+  tradeMode = mode;
+  const tabBuy = document.getElementById('tabBuy');
+  const tabSell = document.getElementById('tabSell');
+  const execBtn = document.getElementById('execBtn');
+  const quickAmts = document.getElementById('quickAmts');
+  const maxBtn = document.getElementById('maxBtn');
+  const amountLabel = document.getElementById('amountLabel');
+  const amountCurrency = document.getElementById('amountCurrency');
+
+  const slider = document.getElementById('toggleSlider');
+  if(mode==='buy'){
+    tabBuy.className='trade-tab active-buy';
+    tabSell.className='trade-tab';
+    execBtn.className='exec-btn exec-buy';
+    execBtn.textContent='Buy Now';
+    quickAmts.style.display='flex';
+    maxBtn.style.display='none';
+    amountLabel.textContent='Amount (USD)';
+    amountCurrency.textContent='$';
+    document.getElementById('previewTotal').style.color='var(--green)';
+    slider.classList.remove('sell');
+  } else {
+    tabBuy.className='trade-tab';
+    tabSell.className='trade-tab active-sell';
+    execBtn.className='exec-btn exec-sell';
+    execBtn.textContent='Sell Now';
+    quickAmts.style.display='none';
+    maxBtn.style.display='block';
+    amountLabel.textContent='Amount (Coins)';
+    amountCurrency.textContent='';
+    document.getElementById('previewTotal').style.color='var(--red)';
+    slider.classList.add('sell');
+  }
+  document.getElementById('pickerLabel').textContent = mode==='buy' ? 'Select asset to buy' : 'Select asset to sell';
+  document.getElementById('tradeAmount').value = mode==='buy' ? '100' : '0';
+  updateSelectorBtn();
+  updateTradePreview();
+}
+
+function renderTradePage(){
+  if(tradeMode==='sell' && !(holdings[selectedSym]||0)){
+    const first=COINS.find(c=>(holdings[c.sym]||0)>0);
+    selectedSym=first?first.sym:'BTC';
+  }
+  updateSelectorBtn();
+  updateTradePreview();
+}
+
+function updateSelectorBtn(){
+  const coin = COINS.find(c=>c.sym===selectedSym);
+  if(!coin) return;
+  document.getElementById('csIcon').style.background = coin.color+'22';
+  document.getElementById('csIcon').style.color = coin.color;
+  document.getElementById('csIcon').textContent = coin.icon;
+  document.getElementById('csName').textContent = coin.name;
+  document.getElementById('csSym').textContent = coin.sym;
+  document.getElementById('csPrice').textContent = fmt(coin.price, coin.price>1?2:4);
+  const chgEl = document.getElementById('csChg');
+  chgEl.textContent = (coin.change>=0?'+':'')+coin.change+'%';
+  chgEl.style.color = coin.change>=0?'var(--green)':'var(--red)';
+}
+
+function openCoinSheet(){
+  document.getElementById('coinSheetTitle').textContent = tradeMode==='sell' ? 'Select Asset to Sell' : 'Select Asset to Buy';
+  document.getElementById('coinSearch').value='';
+  filterCoins('');
+  document.getElementById('coinSheetOverlay').classList.add('open');
+  document.getElementById('coinSheet').classList.add('open');
+  setTimeout(()=>document.getElementById('coinSearch').focus(),300);
+}
+
+function closeCoinSheet(){
+  document.getElementById('coinSheetOverlay').classList.remove('open');
+  document.getElementById('coinSheet').classList.remove('open');
+}
+
+function filterCoins(q){
+  const coins = tradeMode==='sell'
+    ? COINS.filter(c=>(holdings[c.sym]||0)>0)
+    : COINS;
+  const filtered = q ? coins.filter(c=>
+    c.name.toLowerCase().includes(q.toLowerCase()) ||
+    c.sym.toLowerCase().includes(q.toLowerCase())
+  ) : coins;
+
+  if(tradeMode==='sell' && coins.length===0){
+    document.getElementById('coinSheetList').innerHTML='<div class="empty-msg">No holdings to sell.</div>';
+    return;
+  }
+
+  document.getElementById('coinSheetList').innerHTML = filtered.map(c=>{
+    const held = holdings[c.sym]||0;
+    const isSelected = c.sym===selectedSym;
+    return '<div class="coin-pick-item'+(isSelected?' selected':'')+'" data-sym="'+c.sym+'">'
+      +'<div class="cp-icon" style="background:'+c.color+'22;color:'+c.color+'">'+c.icon+'</div>'
+      +'<div class="cp-info">'
+        +'<div class="cp-name">'+c.name+'</div>'
+        +'<div class="cp-sub">'+c.sym+(c.change>=0?' +':' ')+c.change+'%</div>'
+      +'</div>'
+      +'<div class="cp-right">'
+        +'<div class="cp-price">'+fmt(c.price,c.price>1?2:4)+'</div>'
+        +'<div class="cp-held">'+(held>0?fmt(c.price*held):'—')+'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+  // attach click handlers after render
+  document.querySelectorAll('#coinSheetList .coin-pick-item').forEach(el=>{
+    el.addEventListener('click',()=>pickCoin(el.dataset.sym));
+  });
+}
+
+function pickCoin(sym){
+  selectedSym = sym;
+  if(tradeMode==='sell'){
+    const held = holdings[sym]||0;
+    document.getElementById('tradeAmount').value = held>0?(held/2).toFixed(6).replace(/\.?0+$/,''):'0';
+  } else {
+    document.getElementById('tradeAmount').value='100';
+  }
+  closeCoinSheet();
+  updateSelectorBtn();
+  updateTradePreview();
+}
+
+
+function setQuick(amt){
+  document.getElementById('tradeAmount').value = amt;
+  updateTradePreview();
+}
+
+function setMax(){
+  const held = holdings[selectedSym]||0;
+  document.getElementById('tradeAmount').value = held.toFixed(8).replace(/\.?0+$/,'');
+  updateTradePreview();
+}
+
+function updateTradePreview(){
+  const coin = COINS.find(c=>c.sym===selectedSym);
+  if(!coin) return;
+  const amt = parseFloat(document.getElementById('tradeAmount').value)||0;
+
+  if(tradeMode==='buy'){
+    const fee=amt*0.005, recv=amt/coin.price;
+    document.getElementById('previewLabel1').textContent='You pay';
+    document.getElementById('previewVal1').textContent=fmt(amt);
+    document.getElementById('previewLabel2').textContent='You receive';
+    document.getElementById('previewVal2').textContent=recv.toLocaleString('en-US',{maximumSignificantDigits:5})+' '+coin.sym;
+    document.getElementById('previewFee').textContent=fmt(fee);
+    document.getElementById('previewTotalLabel').textContent='Total';
+    document.getElementById('previewTotal').textContent=fmt(amt+fee);
+  } else {
+    const usd=amt*coin.price, fee=usd*0.005;
+    document.getElementById('previewLabel1').textContent='You sell';
+    document.getElementById('previewVal1').textContent=amt+' '+coin.sym;
+    document.getElementById('previewLabel2').textContent='Gross USD';
+    document.getElementById('previewVal2').textContent=fmt(usd);
+    document.getElementById('previewFee').textContent=fmt(fee);
+    document.getElementById('previewTotalLabel').textContent='Net USD';
+    document.getElementById('previewTotal').textContent=fmt(usd-fee);
+  }
+}
+
+function executeTrade(){
+  const coin = COINS.find(c=>c.sym===selectedSym);
+  const amt = parseFloat(document.getElementById('tradeAmount').value)||0;
+  if(!amt) return showToast('Enter an amount');
+
+  if(tradeMode==='buy'){
+    holdings[selectedSym]=(holdings[selectedSym]||0)+amt/coin.price;
+    saveHoldings();renderAll();
+    showToast('✓ Bought '+fmt(amt)+' of '+coin.sym);
+    document.getElementById('tradeAmount').value='100';
+  } else {
+    const held=holdings[selectedSym]||0;
+    if(amt>held) return showToast('Insufficient balance');
+    holdings[selectedSym]=Math.max(0,held-amt);
+    saveHoldings();renderAll();
+    showToast('✓ Sold '+amt+' '+coin.sym);
+    document.getElementById('tradeAmount').value='0';
+  }
+  updateSelectorBtn();
+  updateTradePreview();
+}
+
 // close modal on overlay click
 document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===this)closeModal()});
 // toggles in settings
 document.querySelectorAll('.toggle:not(#livePriceToggle)').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('off')));
 
 loadHoldings();renderAll();
+// init nav pill
+setTimeout(()=>animateNavPill('home'), 50);
 </script>
 </body>
 </html>
