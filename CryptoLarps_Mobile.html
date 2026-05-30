@@ -1704,6 +1704,28 @@ setTimeout(()=>animateNavPill('home'), 50);
 
   raf = requestAnimationFrame(draw);
 })();
+
+let liveEnabled = false;
+
+function toggleLivePrices(){
+  liveEnabled = !liveEnabled;
+
+  const toggle = document.getElementById("livePriceToggle");
+
+  if(liveEnabled){
+    toggle.classList.remove("off");
+
+    if(typeof fetchLivePrices === "function"){
+      fetchLivePrices();
+    }
+
+    document.getElementById("liveStatus").textContent = "Live";
+  }else{
+    toggle.classList.add("off");
+    document.getElementById("liveStatus").textContent = "Offline";
+  }
+}
+
 </script>
 </body>
 </html>
